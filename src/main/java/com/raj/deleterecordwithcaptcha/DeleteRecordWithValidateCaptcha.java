@@ -58,7 +58,7 @@ public static void main(String[] args) throws FileNotFoundException, IOException
         WebDriver driver = new ChromeDriver();
         
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         driver.get("https://tn.unitetools.in/");
         
         driver.findElement(By.id("user")).sendKeys("TN12101048_de@coopsindia.com");
@@ -71,7 +71,7 @@ public static void main(String[] args) throws FileNotFoundException, IOException
         WebElement deletePage = driver.findElement(By.xpath("//a[contains(@href,'/Utilities/DeleteCustomerData/DeleteCustomerData')]/li[contains(@class,'list-group-item') and contains(@class,'bg-primary')]"));
         deletePage.click();
          
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(driver, 5);
         
         
          // Loop to fetch and click the first row continuously
@@ -89,7 +89,6 @@ public static void main(String[] args) throws FileNotFoundException, IOException
                 System.out.println("Clicked on the first row");
 
                 // Additional actions after clicking the row
-                // For example, select options from dropdowns and click buttons
                 WebElement productDropdown = wait.until(ExpectedConditions.elementToBeClickable(By.id("ProductCode")));
                 Select productSelect = new Select(productDropdown);
                 productSelect.selectByVisibleText("Customer");
@@ -111,9 +110,6 @@ public static void main(String[] args) throws FileNotFoundException, IOException
                 WebElement validateButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(), 'Validate')]")));
                 validateButton.click();
                 
-             //   WebElement sweetAlert = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("sweet-alert")));
-              //  WebElement okButton = sweetAlert.findElement(By.className("confirm"));
-              //  okButton.click();
               
                WebElement sweetAlert = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("sweet-alert")));
                WebElement h2Element = sweetAlert.findElement(By.tagName("h2"));
