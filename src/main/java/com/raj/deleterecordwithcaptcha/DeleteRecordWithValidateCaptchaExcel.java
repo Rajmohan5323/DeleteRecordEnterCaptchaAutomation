@@ -15,10 +15,12 @@ import net.sourceforge.tess4j.Tesseract;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.interactions.Actions;
 
 public class DeleteRecordWithValidateCaptchaExcel {
 
@@ -29,7 +31,7 @@ public class DeleteRecordWithValidateCaptchaExcel {
 
             // Use Tesseract to perform OCR on the captcha image
             ITesseract tesseract = new Tesseract();
-            tesseract.setDatapath("src\\main\\java\\tessdata\\"); // Set the path to your Tesseract data directory
+            tesseract.setDatapath("C:\\tessdata\\"); // Set the path to your Tesseract data directory
             return tesseract.doOCR(screenshot);
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,10 +44,10 @@ public class DeleteRecordWithValidateCaptchaExcel {
         WebDriver driver = new ChromeDriver();
 
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         driver.get("https://tn.unitetools.in/");
-
-        driver.findElement(By.id("user")).sendKeys("TN12102253_de@coopsindia.com");
+        
+        driver.findElement(By.id("user")).sendKeys("TN12101062_de@coopsindia.com");//Myladi
         driver.findElement(By.id("pwd")).sendKeys("Unite@123");
         driver.findElement(By.id("btnvalidatelogin")).click();
 
@@ -58,7 +60,7 @@ public class DeleteRecordWithValidateCaptchaExcel {
         deletePage.click();
 
         // Read data from Excel
-        FileInputStream fileInputStream = new FileInputStream(new File("D:\\Test.xlsx"));
+        FileInputStream fileInputStream = new FileInputStream(new File("D:\\Vasistapuram.xlsx"));
         Workbook workbook = new XSSFWorkbook(fileInputStream);
         Sheet sheet = workbook.getSheetAt(0);
 
@@ -74,7 +76,7 @@ public class DeleteRecordWithValidateCaptchaExcel {
                 inputField.clear(); // Clear the input field
                 inputField.sendKeys(formattedValue); // Enter the value from Excel
 
-                WebDriverWait wait = new WebDriverWait(driver, 1);
+                WebDriverWait wait = new WebDriverWait(driver, 2);
                 
 
                 // Click on search button
@@ -124,6 +126,7 @@ public class DeleteRecordWithValidateCaptchaExcel {
                             WebElement okButton = alertBox1.findElement(By.xpath(".//button[@class='confirm']"));
                             okButton.click();
                           //  continue;// Move to next iteration
+                          
                             // Added by rajmohan
                              
                           //  WebElement homeButton = driver.findElement(By.cssSelector("a.pl-2.pr-2.home-botton.bg-white"));
@@ -149,7 +152,7 @@ public class DeleteRecordWithValidateCaptchaExcel {
                             inputField1.clear(); // Clear the input field
                             inputField1.sendKeys(formattedValue); // Enter the value from Excel  
                             
-                             WebElement statusDropdown = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("Status")));
+                            WebElement statusDropdown = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("Status")));
                             Select statusSelect = new Select(statusDropdown);
                             statusSelect.selectByVisibleText("Not Matched");
                             
@@ -160,14 +163,87 @@ public class DeleteRecordWithValidateCaptchaExcel {
                             WebElement editButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnModify")));
                             editButton.click();
                             
-                            WebElement modifyButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnModify")));
-                            modifyButton.click();
                             
-                            WebElement confirmButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnSavedataFRompopup")));
-                            confirmButton.click();
                             
-                             WebElement alertBox2 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("sweet-alert")));
-                             WebElement alertTitle2 = alertBox2.findElement(By.xpath(".//h2[text()='Data updated successfully']"));
+                            
+                        //    WebElement confirmButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnSavedataFRompopup")));
+                         //   confirmButton.click();
+                            
+                          // Ensure the page is fully loaded before interacting
+                           //  wait.until(ExpectedConditions.jsReturnsValue("return document.readyState=='complete'"));  
+                          
+                            WebElement surnameInput = driver.findElement(By.id("MemberSurName"));
+                            surnameInput.clear();
+                            surnameInput.sendKeys("Surname");
+                            
+                            WebElement nameInput = driver.findElement(By.id("MemberName"));
+                            nameInput.clear();
+                            nameInput.sendKeys("Name");
+                            
+                            WebDriverWait wait1 = new WebDriverWait(driver, (long) 1);
+                            
+                            WebElement stateCode =null;
+                            try{
+                             stateCode = wait1.until(ExpectedConditions.visibilityOfElementLocated(By.id("StateCode")));
+                                    
+                            }catch(Exception e){
+                                System.out.println("SSS"+e.getMessage());
+                                System.out.println("StateCode dropdown is not available or visible. Skipping selection.");
+                                
+                            }
+                            System.out.println("Exit Catch Block");
+                            
+                            if (stateCode != null) {
+                            Select stateCodeSelect = new Select(stateCode);
+                            stateCodeSelect.selectByVisibleText("Tamil Nadu");
+                            System.out.println("If block StateCode");
+                            }
+                            
+                            WebElement pinCode = null;
+                            try{
+                              pinCode = wait1.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@id='Pincode']")));
+                            }catch(Exception e){
+                                System.out.println("PinCode is not available or visible. Skipping selection.");
+                                //break; // Exit the method if dropdown is not found or visible
+                               WebElement editButton1 = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnModify")));
+                              editButton1.click(); 
+                            }
+                            if (pinCode != null) {
+                                System.out.println("If block---------------------------- PinCode");
+                                pinCode.sendKeys("123456");
+                            }
+                            
+                            /*
+                            try{
+                            WebElement pinCode = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@id='Pincode']")));
+                            pinCode.sendKeys("123456");
+                            //Actions actions1 = new Actions(driver);
+                            //actions1.sendKeys(pinCode,"123456").build().perform();
+                            }
+                            catch(Exception e){
+                                System.out.println("Exception in ---->"+e.getMessage());
+                            }*/
+                          //  WebElement editButton2 = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnModify")));
+                           // editButton2.click(); 
+                           System.out.println("Exit Catch Block=---------------------------->");
+                            
+                           // Wait for the modal to become invisible
+                           
+                            
+                             WebElement editButton1 = wait1.until(ExpectedConditions.elementToBeClickable(By.id("btnModify")));
+                             editButton1.click();
+                          //   WebElement editButton3 = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnModify")));
+                           //  editButton1.click();
+                            wait1.until(ExpectedConditions.invisibilityOfElementLocated(By.id("popuppreview")));
+                          //  Thread.sleep(3000);
+                         //  wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("popuppreview")));
+                           WebElement button = wait1.until(ExpectedConditions.elementToBeClickable(By.id("btnSavedataFRompopup")));
+                        //    WebElement button = driver.findElement(By.id("btnSavedataFRompopup"));
+                            button.click();
+                            
+                            
+                            WebElement alertBox2 = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("sweet-alert")));
+                            WebElement alertTitle2 = alertBox2.findElement(By.xpath(".//h2[text()='Data updated successfully']"));
                          
                              if (alertTitle2.isDisplayed()) {
                              WebElement okButton2 = alertBox2.findElement(By.xpath(".//button[@class='confirm']"));
@@ -209,7 +285,6 @@ public class DeleteRecordWithValidateCaptchaExcel {
                                  Select productSelect1 = new Select(productDropdown1);
                                  productSelect1.selectByVisibleText("Customer");
                                 
-                                // WebDriverWait wait1 = new WebDriverWait(driver, 1);
                                 // Select "Admission No." from the task type dropdown
                                 Select taskTypeDropdown1 = new Select(driver.findElement(By.id("TaskType")));
                                 taskTypeDropdown1.selectByValue("1");
@@ -261,6 +336,16 @@ public class DeleteRecordWithValidateCaptchaExcel {
                             
                             WebElement okButton = sweetAlert.findElement(By.className("confirm"));
                             okButton.click();
+                            
+                            // Initialize a new FileOutputStream for writing data
+                            FileOutputStream outputStream = new FileOutputStream(new File("D:\\Vasistapuram.xlsx"));
+                            // After successful deletion, mark the record as deleted in Excel
+                            Cell resultCell = row.createCell(1); // Assuming column B for result status
+                            resultCell.setCellValue(formattedValue+" Deleted");
+                            cell.setCellValue("");
+                            // Save changes to the Excel file
+                             workbook.write(outputStream);
+                            
                             break; // Exit the loop if data is successfully deleted
                         } else if (message.equals("Enter valid captcha")) {
                             // Click OK button
